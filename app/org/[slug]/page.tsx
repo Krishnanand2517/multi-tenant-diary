@@ -7,27 +7,27 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
 export default function OrgLandingPage() {
-  const [blogTitle, setBlogTitle] = useState("");
-  const [blogContent, setBlogContent] = useState("");
+  const [entryTitle, setEntryTitle] = useState("");
+  const [entryContent, setEntryContent] = useState("");
 
   const handleSubmit = () => {
-    console.log(blogTitle, blogContent);
+    console.log(entryTitle, entryContent);
   };
 
   return (
     <main className="p-6 space-y-2">
       <Input
-        value={blogTitle}
-        onChange={(e) => setBlogTitle(e.target.value)}
-        placeholder="Blog Title"
+        value={entryTitle}
+        onChange={(e) => setEntryTitle(e.target.value)}
+        placeholder="Diary Entry Title"
       />
       <Textarea
-        value={blogContent}
-        onChange={(e) => setBlogContent(e.target.value)}
-        placeholder="Write your blog content here."
+        value={entryContent}
+        onChange={(e) => setEntryContent(e.target.value)}
+        placeholder="Write your diary entry here."
       />
       <Button onClick={handleSubmit} className="cursor-pointer">
-        Create Article
+        Create Entry
       </Button>
     </main>
   );
