@@ -37,6 +37,7 @@
   ],
   "trustedDependencies": [
     "@clerk/shared",
+    "msw",
     "sharp",
     "unrs-resolver"
   ]
