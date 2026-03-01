@@ -20,17 +20,34 @@ export default async function SubdomainPage({ params }:{ params: Promise<Params>
     .where(eq(entriesTable.orgId, orgId));
 
   return (
-    <div className="px-4 md:px-32 py-4 md:py-20">
-      <h1 className="text-2xl font-bold">{orgName}</h1>
-
-      <div className="space-y-4 md:space-y-8 mt-4 md:mt-8">
-        {entries.map((entry) => (
-          <div key={entry.id} className="p-4 border border-zinc-900 rounded-md">
-            <h3 className="text-lg font-semibold">{entry.title}</h3>
-            <p>{entry.body}</p>
-          </div>
-        ))}
+    <div className="max-w-2xl mx-auto py-16 px-6 flex flex-col gap-10">
+      <div className="flex flex-col gap-1 border-b border-stone-200 pb-8">
+        <p className="text-xs uppercase tracking-widest text-stone-500 font-sans">
+          Diary
+        </p>
+        <h1 className="text-3xl font-serif italic text-stone-700">
+          {orgName}
+        </h1>
       </div>
+
+      {entries.length === 0 ? (
+        <p className="text-stone-400 font-serif italic text-center py-16">
+          No entries yet.
+        </p>
+      ) : (
+        <div className="flex flex-col gap-8">
+          {entries.map((entry) => (
+            <article key={entry.id} className="flex flex-col gap-2 border-b border-stone-100 pb-8 last:border-0">
+              <h3 className="text-lg font-serif text-stone-800">
+                {entry.title}
+              </h3>
+              <p className="text-stone-600 font-serif leading-relaxed">
+                {entry.body}
+              </p>
+            </article>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
