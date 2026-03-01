@@ -31,7 +31,10 @@ const Navbar = () => {
         </SignedOut>
 
         <SignedIn>
-          <OrganizationSwitcher afterSelectOrganizationUrl="/org/:slug" />
+          <OrganizationSwitcher
+            afterSelectOrganizationUrl="/org/:slug"
+            afterSelectPersonalUrl="/"
+          />
           <UserButton />
         </SignedIn>
       </div>
