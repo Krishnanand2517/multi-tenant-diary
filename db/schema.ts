@@ -6,3 +6,6 @@ export const entriesTable = pgTable("entries", {
   body: text().notNull(),
   orgId: text().notNull()
 });
+
+export type CreateEntryType = typeof entriesTable.$inferInsert;
+export type SelectEntryType = typeof entriesTable.$inferSelect;
