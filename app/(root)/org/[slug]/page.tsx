@@ -23,7 +23,8 @@ export default function OrgLandingPage() {
       orgId: selectedOrg.organization.id
     });
 
-    console.log(res);
+    setEntryTitle("");
+    setEntryContent("");
   };
 
   return (
