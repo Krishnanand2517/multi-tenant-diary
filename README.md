@@ -1,36 +1,126 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Diarist - Multi-Tenant Diary App
 
-## Getting Started
+A full-stack, multi-tenant diary application built with **Next.js 16**, **Clerk**, **Drizzle ORM**, and **PostgreSQL**. Each organization gets its own isolated workspace and a publicly accessible subdomain to read its diary entries.
 
-First, run the development server:
+## ✨ Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Multi-tenancy via Clerk Organizations**: Users create or join organizations; each org has its own isolated set of diary entries stored by `orgId`.
+- **Subdomain-based public pages**: Each organization's diary is accessible at `<org-slug>.yourdomain.com`, powered by Next.js middleware that rewrites subdomain requests transparently.
+- **Private writing dashboard**: Authenticated members write entries through a clean, distraction-free editor scoped to their active organization.
+- **Server Actions**: Entry creation is handled with Next.js Server Actions for a seamless, type-safe full-stack experience.
+- **Drizzle ORM + PostgreSQL**: Lightweight, type-safe database layer with schema push for rapid iteration.
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 16 (App Router) |
+| Auth & Orgs | Clerk |
+| Database ORM | Drizzle ORM |
+| Database | PostgreSQL |
+| UI Components | shadcn/ui + Tailwind CSS v4 |
+| Runtime | Bun |
+| Notifications | Sonner |
+
+## Project Structure
+
+```
+├── app/
+│   ├── (root)/                    # Main app (authenticated)
+│   │   ├── page.tsx               # Landing / sign-in redirect
+│   │   ├── layout.tsx             # Root layout with Clerk provider
+│   │   └── org/[slug]/
+│   │       ├── page.tsx           # Diary entry creation page
+│   │       └── actions.ts         # Server Action: createEntry
+│   ├── (subdomain)/
+│   │   └── s/[subdomain]/
+│   │       ├── page.tsx           # Public subdomain diary reader
+│   │       └── layout.tsx         # Subdomain layout
+│   ├── components/
+│       └── navbar.tsx                 # Clerk-powered navigation bar
+├── components/
+│   └── ui/                        # shadcn/ui components
+├── db/
+│   ├── schema.ts                  # Drizzle schema (entries table)
+│   └── index.ts                   # DB connection
+├── proxy.ts                       # Next.js middleware (subdomain routing)
+├── docker-compose.yml             # Local PostgreSQL setup
+└── drizzle.config.ts              # Drizzle config
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🚀 Getting Started
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Prerequisites
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- [Bun](https://bun.sh) installed
+- [Docker](https://www.docker.com/) for local PostgreSQL
+- A [Clerk](https://clerk.com) account with **Organizations** enabled
 
-## Learn More
+### 1. Clone the repo
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+git clone https://github.com/Krishnanand2517/multi-tenant-diary.git
+cd multi-tenant-diary
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 2. Install dependencies
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+bun install
+```
 
-## Deploy on Vercel
+### 3. Start the database
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+docker-compose up -d
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### 4. Configure environment variables
+
+Create a `.env` file at the root:
+
+```env
+# Clerk
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_publishable_key
+CLERK_SECRET_KEY=your_secret_key
+
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+
+# Database
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
+```
+
+> Make sure to enable **Organizations** in your Clerk dashboard.
+
+### 5. Push the database schema
+
+```bash
+bun run db:push
+```
+
+### 6. Run the development server
+
+```bash
+bun run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) to see the app.
+
+## 🌐 Subdomain Routing (How It Works)
+
+Subdomain routing is handled in `proxy.ts` (the Next.js middleware). When a request arrives at `<slug>.localhost:3000` (local) or `<slug>.yourdomain.com` (production), the middleware detects the subdomain and rewrites the request internally to `/s/<slug>`, without changing the visible URL.
+
+The subdomain page then uses the Clerk backend API to resolve the org from the slug, fetches that org's entries from the database, and renders a public read-only diary.
+
+## 📜 Available Scripts
+
+| Command | Description |
+|---|---|
+| `bun run dev` | Start development server |
+| `bun run build` | Build for production |
+| `bun run start` | Start production server |
+| `bun run db:push` | Push schema to database |
+| `bun run db:studio` | Open Drizzle Studio (DB GUI) |
+
+Happy Coding 🚀
