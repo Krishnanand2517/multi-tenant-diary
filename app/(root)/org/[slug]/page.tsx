@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useOrganization } from "@clerk/nextjs";
+import { toast } from "sonner";
 
 import { createEntry } from "./actions";
 import { Button } from "@/components/ui/button";
@@ -11,20 +12,31 @@ import { Textarea } from "@/components/ui/textarea";
 export default function OrgLandingPage() {
   const [entryTitle, setEntryTitle] = useState("");
   const [entryContent, setEntryContent] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const selectedOrg = useOrganization();
 
   const handleCreateEntry = async () => {
     if (!selectedOrg.organization?.id) return;
+    setIsLoading(true);
 
-    const res = await createEntry({
-      title: entryTitle.trim(),
-      body: entryContent.trim(),
-      orgId: selectedOrg.organization.id
-    });
+    try {
+      await createEntry({
+        title: entryTitle.trim(),
+        body: entryContent.trim(),
+        orgId: selectedOrg.organization.id
+      });
 
-    setEntryTitle("");
-    setEntryContent("");
+      setEntryTitle("");
+      setEntryContent("");
+
+      toast.success("Entry saved.");
+    } catch (error) {
+      console.error("Error creating entry:", error);
+      toast.error("Could not create an entry. Try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -57,7 +69,7 @@ export default function OrgLandingPage() {
       <div className="flex justify-end">
         <Button
           onClick={handleCreateEntry}
-          disabled={!entryTitle.trim() || !entryContent.trim()}
+          disabled={!entryTitle.trim() || !entryContent.trim() || isLoading}
           className="cursor-pointer rounded-none bg-stone-800 hover:bg-stone-700 text-stone-100 text-xs uppercase tracking-widest px-8 py-5 font-sans transition-colors disabled:opacity-30"
         >
           Save Entry

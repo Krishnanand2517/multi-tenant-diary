@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { DM_Sans, Lora, Playfair_Display } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from "sonner";
 import "@/app/globals.css";
 import Navbar from "@/app/components/navbar";
 
@@ -39,6 +40,17 @@ export default function RootLayout({
           className={`${playfair.variable} ${lora.variable} antialiased bg-stone-100 text-stone-900 min-h-dvh`}
         >
           <Navbar />
+
+          <Toaster
+            position="bottom-right"
+            theme="light"
+            toastOptions={{
+              classNames: {
+                toast: "font-serif italic text-stone-700 border-stone-200 bg-stone-50",
+              },
+            }}
+          />
+
           <main className="max-w-5xl mx-auto px-6 py-8">
             {children}
           </main>
