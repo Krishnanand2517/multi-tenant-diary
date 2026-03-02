@@ -4,7 +4,7 @@ A full-stack, multi-tenant diary application built with **Next.js 16**, **Clerk*
 
 ## ✨ Features
 
-- **Multi-tenancy via Clerk Organizations**: Users create or join organizations; each org has its own isolated set of diary entries stored by `orgId`.
+- **Multi-tenancy via Clerk Organizations**: Users create or join Spaces; each Space has its own isolated set of diary entries stored by `orgId`.
 - **Subdomain-based public pages**: Each organization's diary is accessible at `<org-slug>.yourdomain.com`, powered by Next.js middleware that rewrites subdomain requests transparently.
 - **Private writing dashboard**: Authenticated members write entries through a clean, distraction-free editor scoped to their active organization.
 - **Server Actions**: Entry creation is handled with Next.js Server Actions for a seamless, type-safe full-stack experience.
@@ -89,6 +89,9 @@ NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
 
 # Database
 DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
+
+# App
+NEXT_PUBLIC_ROOT_DOMAIN=localhost:3000
 ```
 
 > Make sure to enable **Organizations** in your Clerk dashboard.
