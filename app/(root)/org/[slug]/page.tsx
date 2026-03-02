@@ -15,6 +15,15 @@ export default function OrgLandingPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   const selectedOrg = useOrganization();
+  const slug = selectedOrg.organization?.slug;
+
+  const rootDomain = process.env.NEXT_PUBLIC_ROOT_DOMAIN || "localhost:3000";
+
+  const protocol = process.env.NODE_ENV === "production" ? "https" : "http";
+
+  const spaceUrl = slug
+    ? `${protocol}://${slug}.${rootDomain}`
+    : null;
 
   const handleCreateEntry = async () => {
     if (!selectedOrg.organization?.id) return;
@@ -41,13 +50,31 @@ export default function OrgLandingPage() {
 
   return (
     <div className="max-w-2xl mx-auto py-16 px-6 flex flex-col gap-8">
-      <div className="flex flex-col gap-1">
-        <p className="text-xs uppercase tracking-widest text-stone-500">
-          New Entry
-        </p>
-        <h2 className="text-3xl font-serif italic text-stone-700">
-          What's on your mind?
-        </h2>
+      <div className="flex items-start justify-between">
+        <div className="flex flex-col gap-1">
+          <p className="text-xs uppercase tracking-widest text-stone-500">
+            New Entry
+          </p>
+          <h2 className="text-3xl font-serif italic text-stone-700">
+            What's on your mind?
+          </h2>
+        </div>
+
+        {spaceUrl && (
+          <a
+            href={spaceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex flex-col items-end text-right"
+          >
+            <span className="text-[10px] uppercase tracking-widest text-stone-400 font-sans">
+              Your Space
+            </span>
+            <span className="text-sm font-serif italic text-stone-600 group-hover:text-stone-800 transition-colors">
+              {slug}.{rootDomain}
+            </span>
+          </a>
+        )}
       </div>
 
       <div className="flex flex-col gap-4">
